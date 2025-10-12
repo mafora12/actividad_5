@@ -1,0 +1,17 @@
+body {
+  margin: 0;
+  overflow: hidden;
+  background: black;
+  color: white;
+  font-family: 'Poppins', sans-serif;
+  text-align: center;
+}
+
+.title {
+  position: absolute;
+  top: 10px;
+  width: 100%;
+  font-size: 1.2rem;
+  letter-spacing: 2px;
+  opacity: 0.8;
+}
