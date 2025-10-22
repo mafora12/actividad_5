@@ -1,43 +1,37 @@
 let socket;
-let lastX = null;
-let lastY = null;
 
 function setup() {
   createCanvas(windowWidth, windowHeight);
   background(0);
-  socket = io();
+  colorMode(HSB);
+  noStroke();
 
-  socket.on('connect', () => console.log('📲 Conectado al servidor'));
+  socket = io();
+  socket.on("connect", () => console.log("📲 Conectado al servidor"));
 }
 
 function touchMoved() {
-  const dx = mouseX - (lastX ?? mouseX);
-  const dy = mouseY - (lastY ?? mouseY);
-  const speed = sqrt(dx * dx + dy * dy);
+  const hue = map(mouseX, 0, width, 180, 300);
+  const brightness = map(mouseY, 0, height, 80, 100);
+  const colorData = `hsl(${hue}, 100%, ${brightness}%)`;
 
-  const hue = map(mouseX, 0, width, 0, 360);
-  const brightness = map(speed, 0, 50, 50, 100);
-
-  const colorData = {
-    type: 'paint',
+  // Envía al servidor la posición, color y movimiento
+  socket.emit("mobileData", {
     x: mouseX,
     y: mouseY,
-    color: `hsl(${hue}, 100%, ${brightness}%)`,
-    velocity: speed
-  };
+    color: colorData,
+    rotationX,
+    rotationY,
+    touch: true,
+  });
 
-  socket.emit('paint', colorData);
-
-  fill(colorData.color);
-  noStroke();
+  // Feedback visual local
+  fill(colorData);
   ellipse(mouseX, mouseY, 30);
-  lastX = mouseX;
-  lastY = mouseY;
-
   return false;
 }
 
 function draw() {
-  fill(0, 20);
+  fill(0, 0.1);
   rect(0, 0, width, height);
 }
