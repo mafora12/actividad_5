@@ -2,13 +2,14 @@ let socket;
 let trails = [];
 let song, fft, amplitude;
 let reactiveGlow = 0;
+let circleColor = "hsl(0, 0%, 100%)"; // color inicial (blanco)
+
 
 let phoneData = { x: 0, y: 0, color: "hsl(0,100%,100%)", touch: false };
 let microData = { accel: 0, buttonA: false, buttonB: false, shake: false };
 
 let bgGraphics;
 let starPositions = [];
-
 
 function preload() {
   song = loadSound("/Camille Saint-Saëns - Danse Macabre.mp3");
@@ -26,16 +27,17 @@ function setup() {
   socket = io();
   socket.on("connect", () => console.log("🖥️ Conectado al servidor"));
 
-  socket.on("mobileData", (data) => {
-    phoneData = data;
-    trails.push({
-      x: data.x,
-      y: data.y,
-      color: data.color,
-      life: 255,
-    });
-    if (trails.length > 50) trails.shift();
+socket.on("mobileData", (data) => {
+  phoneData = data;
+  trails.push({
+    x: data.x,
+    y: data.y,
+    color: circleColor, // 👈 usa el color actual
+    life: 255,
   });
+  if (trails.length > 50) trails.shift();
+});
+
 
   socket.on("microbitData", (data) => (microData = data));
 
@@ -60,11 +62,12 @@ function draw() {
     if (t.life <= 0) trails.splice(i, 1);
   }
 
-  if (microData.buttonA) {
-       console.log("🎵 Botón A detectado");
-      fill(random(180, 300), 255, 255, 0.6);
-      ellipse(random(width), random(height), random(50, 120));
-    }
+if (microData.buttonA) {
+  console.log("🎵 Botón A detectado");
+  circleColor = "hsl(300, 100%, 70%)"; // 💜 magenta brillante
+  fill(300, 100, 70, 0.8);
+  ellipse(random(width), random(height), random(50, 120));
+}
 
 if (microData.shake) {
       console.log("💥 Agitado!");

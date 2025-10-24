@@ -15,7 +15,67 @@
         overflow: hidden;
         background: black;
       }
+
+      /* Botón flotante arriba a la izquierda */
+      #connectBtn {
+        position: fixed;
+        top: 10px;
+        left: 10px;
+        background: #ff0044;
+        border: none;
+        border-radius: 8px;
+        color: white;
+        padding: 10px 16px;
+        font-size: 14px;
+        cursor: pointer;
+        z-index: 1000;
+      }
+
+      #connectBtn:hover {
+        background: #ff3366;
+      }
     </style>
   </head>
-  <body></body>
+
+  <body>
+    <button id="connectBtn">🔌 Conectar micro:bit</button>
+
+    <script>
+      // Variables globales accesibles desde sketch.js
+      window.microData = { buttonA: false, buttonB: false, shake: false };
+
+      document.getElementById("connectBtn").addEventListener("click", async () => {
+        try {
+          const port = await navigator.serial.requestPort();
+          await port.open({ baudRate: 115200 });
+          const reader = port.readable.getReader();
+          console.log("✅ micro:bit conectado");
+          let buffer = "";
+
+          while (true) {
+            const { value, done } = await reader.read();
+            if (done) break;
+            buffer += new TextDecoder().decode(value);
+
+            // Procesar cada línea JSON enviada por la micro:bit
+            const lines = buffer.split("\n");
+            buffer = lines.pop();
+
+            for (let line of lines) {
+              try {
+                const data = JSON.parse(line.trim());
+                window.microData = data; // 👈 Esto actualiza los datos globales
+              } catch (e) {
+                // ignora líneas vacías o corruptas
+              }
+            }
+          }
+        } catch (err) {
+          console.error("❌ Error conectando micro:bit:", err);
+          alert("Error conectando al micro:bit. Usa Chrome o Edge y acepta permisos.");
+        }
+      });
+    </script>
+  </body>
 </html>
+ 
