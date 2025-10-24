@@ -9,6 +9,7 @@ let microData = { accel: 0, buttonA: false, buttonB: false, shake: false };
 let bgGraphics;
 let starPositions = [];
 
+
 function preload() {
   song = loadSound("/Camille Saint-Saëns - Danse Macabre.mp3");
 }
@@ -60,16 +61,18 @@ function draw() {
   }
 
   if (microData.buttonA) {
-    fill(random(180, 300), 255, 255, 0.6);
-    ellipse(random(width), random(height), random(50, 120));
-  }
-
-  if (microData.shake) {
-    for (let i = 0; i < 10; i++) {
+       console.log("🎵 Botón A detectado");
       fill(random(180, 300), 255, 255, 0.6);
-      ellipse(random(width), random(height), random(10, 40));
+      ellipse(random(width), random(height), random(50, 120));
     }
+
+if (microData.shake) {
+      console.log("💥 Agitado!");
+     for (let i = 0; i < 10; i++) {
+       fill(random(180, 300), 255, 255, 0.6);
+     ellipse(random(width), random(height), random(10, 40));
   }
+}
 
   if (song.isPlaying()) drawSpectrum();
 }
