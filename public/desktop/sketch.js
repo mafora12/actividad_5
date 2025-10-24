@@ -44,7 +44,7 @@ function setup() {
     if (data.buttonA && !microData.buttonA) {
       magentaMode = !magentaMode;
       circleColor = magentaMode
-        ? "hsl(300, 100%, 70%)"
+        ? "hsla(179, 100%, 70%, 1.00)"
         : "hsl(0, 0%, 100%)";
       console.log(magentaMode ? "🌸 Modo magenta activado" : "⚪ Modo blanco restaurado");
     }
@@ -92,7 +92,7 @@ function draw() {
     let b = cyanBursts[i];
     let g = drawingContext.createRadialGradient(b.x, b.y, b.size * 0.2, b.x, b.y, b.size);
     g.addColorStop(0, `hsla(180, 100%, 80%, ${b.alpha / 255})`);
-    g.addColorStop(1, "rgba(0,255,255,0)");
+    g.addColorStop(1, "rgba(63, 63, 30, 0)");
     drawingContext.fillStyle = g;
     ellipse(b.x, b.y, b.size);
 
